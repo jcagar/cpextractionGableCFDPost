@@ -1,0 +1,793 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+/*Converts double to int*/int in(double num){	return num;}
+/*Converts degrees to radians*/inline double to_radians(double degrees) {return degrees / (180.0 / M_PI);}
+/*Returns the length using orthogonal components*/double leng(double x, double y, double z){ return pow(pow(x,2)+pow(y,2)+pow(z,2),0.5);}
+/*Returns the average of two values*/double ave(double x, double y){ return 0.5*(x+y);}
+/*Swaps values*/void swap(double* xp, double* yp) {double temp = *xp;*xp = *yp;*yp = temp;} 
+/*Sorts from lowest to highest*/ void selectionSort(double arr[], int n) {int i, j, min_idx;for (i = 0; i < n - 1; i++) {min_idx = i;for (j = i + 1; j < n; j++)if (arr[j] < arr[min_idx])min_idx = j; swap(&arr[min_idx], &arr[i]);}} 
+/*Double Square*/ double sqr(double x1){return x1*x1;}
+/*Shoelace Formula*/double shoelace(double x1,double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4){double a=x1-x2,b=y1-y2,c=z1-z2,xx=x1-x4,yy=y1-y4,zz=z1-z4; return sqrt(sqr((b*zz)-(yy*c))+sqr((c*xx)-(zz*a))+sqr((a*yy)-(xx*b))); }
+/*Perimeter*/double perim(double x1,double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4){return sqrt(sqr(x1-x2)+sqr(y1-y2)+sqr(z1-z2))+sqrt(sqr(x2-x3)+sqr(y2-y3)+sqr(z2-z3))+sqrt(sqr(x3-x4)+sqr(y3-y4)+sqr(z3-z4))+sqrt(sqr(x4-x1)+sqr(y4-y1)+sqr(z4-z1));}  
+
+
+void printArea(double rot, double trans, int areacount,double ar1x,double ar1y,double ar1z,double ar2x,double ar2y,double ar2z,double ar3x,double ar3y,double ar3z,double ar4x,double ar4y,double ar4z)
+{
+	char angle[128]; char fname[128];char path[] = "degrees-area";sprintf(angle,"%d",in(rot));sprintf(fname,"%d",areacount+1);strcat(fname,".csv");strcat(path,fname);strcat(angle,path);FILE *csv;csv=fopen(angle,"w");  
+	fprintf(csv,"    [Name],,\nArea%d,,\n,,\n[Spatial Fields],,\nx, y, z\n,,\n[Data],,\nx [ m ], y [ m ], z [ m ]\n%lf,%lf,%lf\n%lf,%lf,%lf\n%lf,%lf,%lf\n%lf,%lf,%lf\n\n\n[Faces],,\n0,1,2,3\n",areacount+1,(ar1x*cos(to_radians(-rot)))-(ar1y*sin(to_radians(-rot))),ar1z,trans+(ar1x*sin(to_radians(-rot)))+(ar1y*cos(to_radians(-rot))),(ar2x*cos(to_radians(-rot)))-(ar2y*sin(to_radians(-rot))),ar2z,trans+(ar2x*sin(to_radians(-rot)))+(ar2y*cos(to_radians(-rot))),(ar3x*cos(to_radians(-rot)))-(ar3y*sin(to_radians(-rot))),ar3z,trans+(ar3x*sin(to_radians(-rot)))+(ar3y*cos(to_radians(-rot))),(ar4x*cos(to_radians(-rot)))-(ar4y*sin(to_radians(-rot))),ar4z,trans+(ar4x*sin(to_radians(-rot)))+(ar4y*cos(to_radians(-rot))));
+	fclose(csv);
+	char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(rot));strcat(angles,fpath);FILE *txt; if(areacount==0){txt=fopen(angles,"a");}else{txt=fopen(angles,"a");}
+	fprintf(txt,"USER SURFACE: area%d\n  Apply Instancing Transform = On\n  Apply Rotation = On\n  Apply Scale = On\n  Apply Texture = Off\n  Apply Translation = Off\n  Associated Boundary = Ground\n  Associated Boundary Specified = On\n  Blend Texture = On\n  Colour = 0, 0.8, 0\n  Colour Map = Default Colour Map\n  Colour Mode = Constant\n  Colour Scale = Linear\n  Colour Variable = Pressure\n  Colour Variable Boundary Values = Hybrid\n  Contour Level = 1\n  Culling Mode = No Culling\n  Domain List = /DOMAIN GROUP:All Domains\n  Draw Faces = On\n  Draw Lines = Off\n  File Units = m\n  Input File = D:\\Program Files\\CpExtraction - Wall and Roof\\%ddegrees-area%d.csv\n  Instancing Transform = /DEFAULT INSTANCE TRANSFORM:Default Transform\n  Lighting = On\n  Line Colour = 0, 0, 0\n  Line Colour Mode = Default\n  Line Width = 1\n  Maintain Conservative Values = Off\n  Max = 0.0 [Pa]\n  Min = 0.0 [Pa]\n  Offset Direction = 1 , 0 , 0\n  Offset Distance = 0.0 [m]\n  Offset Mode = Uniform\n  Offset Type = Normal\n  Option = From File\n  Principal Axis = Z\n  Range = Global\n  Render Edge Angle = 0 [degree]\n  Rotation Angle = 0 [degree]\n  Rotation Axis From = 0 [m], 0 [m], 0 [m]\n  Rotation Axis To = 1 [m], 0 [m], 0 [m]\n  Rotation Axis Type = Principal Axis\n  Scale Factor = 1.0\n  Specular Lighting = On\n  Surface Drawing = Smooth Shading\n  Texture Angle = 0\n  Texture Direction = 0 , 1 , 0\n  Texture File = \n  Texture Material = Metal\n  Texture Position = 0 , 0\n  Texture Scale = 1\n  Texture Type = Predefined\n  Tile Texture = Off\n  Transform Texture = Off\n  Translation Vector = 0 [m], 0 [m], 0 [m]\n  Transparency = 0.0\n  Use Mid Side Nodes = On\n  Visibility = On\n  OBJECT VIEW TRANSFORM: \n    Apply Reflection = Off\n    Apply Rotation = On\n    Apply Scale = On\n    Apply Translation = Off\n    Principal Axis = Z\n    Reflection Plane Option = XY Plane\n    Rotation Angle = 0 [degree]\n    Rotation Axis From = 0 [m], 0 [m], 0 [m]\n    Rotation Axis To = 1 [m], 0 [m], 0 [m]\n    Rotation Axis Type = Principal Axis\n    Scale Vector = 1 , 1 , 1\n    Translation Vector = 0 [m], 0 [m], 0 [m]\n    X = 0.0 [m]\n    Y = 0.0 [m]\n    Z = 0.0 [m]\n  END\nEND\n",areacount+1,in(rot),areacount+1);
+	fclose(txt);
+}
+void readArea(double rot, int areacount)
+{
+	char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(rot));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"a");
+	int o=0;
+	fprintf(txt,"\nTABLE: Wall Panels\n  Table Exists = True\n  TABLE CELLS: \n");
+	do{
+    if(in(o/200)==0)fprintf(txt,"    A%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==1)fprintf(txt,"    B%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==2)fprintf(txt,"    C%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==3)fprintf(txt,"    D%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==4)fprintf(txt,"    E%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==5)fprintf(txt,"    F%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==6)fprintf(txt,"    G%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==7)fprintf(txt,"    H%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==8)fprintf(txt,"    I%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==9)fprintf(txt,"    J%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==10)fprintf(txt,"    K%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==11)fprintf(txt,"    L%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==12)fprintf(txt,"    M%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==13)fprintf(txt,"    N%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==14)fprintf(txt,"    O%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==15)fprintf(txt,"    P%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==16)fprintf(txt,"    Q%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==17)fprintf(txt,"    R%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==18)fprintf(txt,"    S%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+    else if(in(o/200)==19)fprintf(txt,"    T%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==20)fprintf(txt,"    U%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==21)fprintf(txt,"    V%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==22)fprintf(txt,"    W%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==23)fprintf(txt,"    X%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==24)fprintf(txt,"    Y%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==25)fprintf(txt,"    Z%d = \"=(areaAve(Cp)@area%d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else;o++;}while (o<areacount);
+    fprintf(txt,"  END\nEND\n");
+    fclose(txt);
+}
+
+void printProbe(int n,double fastenerx[],double fastenery[],double fastenerz[], double trans,double angle)
+{
+    char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(angle));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"w");
+	double rot=-to_radians(angle);;int m,o=0;	
+	for(m=0;m<n;m++)fprintf(txt,"POINT: Point %d\n  Apply Instancing Transform = On\n  Colour = 1, 1, 0\n  Colour Map = Default Colour Map\n  Colour Mode = Variable\n  Colour Scale = Linear\n  Colour Variable = Pressure\n  Colour Variable Boundary Values = Hybrid\n  Culling Mode = No Culling\n  Domain List = /DOMAIN GROUP:All Domains\n  Draw Faces = On\n  Draw Lines = Off\n  Instancing Transform = /DEFAULT INSTANCE TRANSFORM:Default Transform\n  Lighting = On\n  Line Width = 2\n  Max = 0.0 [Pa]\n  Min = 0.0 [Pa]\n  Node Number = %d\n  Option = XYZ\n  Point = %lf [m], %lf [m], %lf [m]\n  Point Symbol = Crosshair\n  Range = Global\n  Specular Lighting = On\n  Surface Drawing = Smooth Shading\n  Symbol Size = 0.08\n  Transparency = 0.0\n  Variable = Pressure\n  Variable Boundary Values = Hybrid\n  Visibility = On\n  OBJECT VIEW TRANSFORM: \n    Apply Reflection = Off\n    Apply Rotation = Off\n    Apply Scale = Off\n    Apply Translation = Off\n    Principal Axis = Z\n    Reflection Plane Option = XY Plane\n    Rotation Angle = 0.0 [degree]\n    Rotation Axis From = 0 [m], 0 [m], 0 [m]\n    Rotation Axis To = 0 [m], 0 [m], 0 [m]\n    Rotation Axis Type = Principal Axis\n    Scale Vector = 1 , 1 , 1\n    Translation Vector = 0 [m], 0 [m], 0 [m]\n    X = 0.0 [m]\n    Y = 0.0 [m]\n    Z = 0.0 [m]\n  END\nEND\n",m+1,m+1,(fastenerx[m]*cos(rot))-(fastenerz[m]*sin(rot)),fastenery[m],trans+(fastenerx[m]*sin(rot))+(fastenerz[m]*cos(rot)));
+	fprintf(txt,"LIBRARY: \n  CEL: \n    EXPRESSIONS: \n      cp = Pressure*2/(Density*U10*U10)\n    END\n  END\n   END\nUSER SCALAR VARIABLE: Cp\n  Boundary Values = Conservative\n  Calculate Global Range = Off\n  Expression = cp\n \n Recipe = Expression\n  Variable to Copy = Pressure\n  Variable to Gradient = Pressure\nEND\n\n\n\n\nTABLE: Cp Values\n  Table Exists = True\n  TABLE CELLS: \n");
+    do{
+    if(in(o/200)==0)fprintf(txt,"    A%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==1)fprintf(txt,"    B%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==2)fprintf(txt,"    C%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==3)fprintf(txt,"    D%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==4)fprintf(txt,"    E%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==5)fprintf(txt,"    F%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==6)fprintf(txt,"    G%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==7)fprintf(txt,"    H%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==8)fprintf(txt,"    I%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==9)fprintf(txt,"    J%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==10)fprintf(txt,"    K%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==11)fprintf(txt,"    L%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==12)fprintf(txt,"    M%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==13)fprintf(txt,"    N%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==14)fprintf(txt,"    O%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==15)fprintf(txt,"    P%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==16)fprintf(txt,"    Q%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==17)fprintf(txt,"    R%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==18)fprintf(txt,"    S%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==19)fprintf(txt,"    T%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==20)fprintf(txt,"    U%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==21)fprintf(txt,"    V%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==22)fprintf(txt,"    W%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==23)fprintf(txt,"    X%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==24)fprintf(txt,"    Y%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==25)fprintf(txt,"    Z%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);		
+    else;o++;}while (o<n);
+	fclose(txt);
+}
+
+void printProbe1(int n, int p, double fastenerx[],double fastenery[],double fastenerz[], double trans,double angle)
+{
+    char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(angle));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"w");
+	double rot=-to_radians(angle);;int m,o=0;	
+	for(m=0;m<n;m++)fprintf(txt,"POINT: Point %d\n  Apply Instancing Transform = On\n  Colour = 1, 1, 0\n  Colour Map = Default Colour Map\n  Colour Mode = Variable\n  Colour Scale = Linear\n  Colour Variable = Pressure\n  Colour Variable Boundary Values = Hybrid\n  Culling Mode = No Culling\n  Domain List = /DOMAIN GROUP:All Domains\n  Draw Faces = On\n  Draw Lines = Off\n  Instancing Transform = /DEFAULT INSTANCE TRANSFORM:Default Transform\n  Lighting = On\n  Line Width = 2\n  Max = 0.0 [Pa]\n  Min = 0.0 [Pa]\n  Node Number = %d\n  Option = XYZ\n  Point = %lf [m], %lf [m], %lf [m]\n  Point Symbol = Crosshair\n  Range = Global\n  Specular Lighting = On\n  Surface Drawing = Smooth Shading\n  Symbol Size = 0.08\n  Transparency = 0.0\n  Variable = Pressure\n  Variable Boundary Values = Hybrid\n  Visibility = On\n  OBJECT VIEW TRANSFORM: \n    Apply Reflection = Off\n    Apply Rotation = Off\n    Apply Scale = Off\n    Apply Translation = Off\n    Principal Axis = Z\n    Reflection Plane Option = XY Plane\n    Rotation Angle = 0.0 [degree]\n    Rotation Axis From = 0 [m], 0 [m], 0 [m]\n    Rotation Axis To = 0 [m], 0 [m], 0 [m]\n    Rotation Axis Type = Principal Axis\n    Scale Vector = 1 , 1 , 1\n    Translation Vector = 0 [m], 0 [m], 0 [m]\n    X = 0.0 [m]\n    Y = 0.0 [m]\n    Z = 0.0 [m]\n  END\nEND\n",m+1,m+1,(fastenerx[m]*cos(rot))-(fastenerz[m]*sin(rot)),fastenery[m],trans+(fastenerx[m]*sin(rot))+(fastenerz[m]*cos(rot)));
+	fprintf(txt,"LIBRARY: \n  CEL: \n    EXPRESSIONS: \n      cp = Pressure*2/(Density*U10*U10)\n    END\n  END\n   END\nUSER SCALAR VARIABLE: Cp\n  Boundary Values = Conservative\n  Calculate Global Range = Off\n  Expression = cp\n \n Recipe = Expression\n  Variable to Copy = Pressure\n  Variable to Gradient = Pressure\nEND\n\n\n\n\nTABLE: Cp Values\n  Table Exists = True\n  TABLE CELLS: \n");
+    do{
+    if(in(o/200)==0)fprintf(txt,"    A%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==1)fprintf(txt,"    B%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==2)fprintf(txt,"    C%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==3)fprintf(txt,"    D%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==4)fprintf(txt,"    E%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==5)fprintf(txt,"    F%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==6)fprintf(txt,"    G%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==7)fprintf(txt,"    H%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==8)fprintf(txt,"    I%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==9)fprintf(txt,"    J%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==10)fprintf(txt,"    K%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==11)fprintf(txt,"    L%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==12)fprintf(txt,"    M%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==13)fprintf(txt,"    N%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==14)fprintf(txt,"    O%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==15)fprintf(txt,"    P%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==16)fprintf(txt,"    Q%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==17)fprintf(txt,"    R%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==18)fprintf(txt,"    S%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==19)fprintf(txt,"    T%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==20)fprintf(txt,"    U%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==21)fprintf(txt,"    V%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==22)fprintf(txt,"    W%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==23)fprintf(txt,"    X%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==24)fprintf(txt,"    Y%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==25)fprintf(txt,"    Z%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);		
+    else;o++;}while (o<p);
+	fclose(txt);
+}
+void printCpNet1(int n, int cpart, double angle)
+{
+    char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(angle));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"a");
+	double rot=-to_radians(angle);	
+    if(in(n/200)==0)fprintf(txt,"    A%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==1)fprintf(txt,"    B%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==2)fprintf(txt,"    C%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==3)fprintf(txt,"    D%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==4)fprintf(txt,"    E%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==5)fprintf(txt,"    F%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==6)fprintf(txt,"    G%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==7)fprintf(txt,"    H%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==8)fprintf(txt,"    I%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+    else if(in(n/200)==9)fprintf(txt,"    J%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==10)fprintf(txt,"    K%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==11)fprintf(txt,"    L%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==12)fprintf(txt,"    M%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==13)fprintf(txt,"    N%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==14)fprintf(txt,"    O%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==15)fprintf(txt,"    P%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==16)fprintf(txt,"    Q%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==17)fprintf(txt,"    R%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+    else if(in(n/200)==18)fprintf(txt,"    S%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==19)fprintf(txt,"    T%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==20)fprintf(txt,"    U%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==21)fprintf(txt,"    V%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==22)fprintf(txt,"    W%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==23)fprintf(txt,"    X%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==24)fprintf(txt,"    Y%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==25)fprintf(txt,"    Z%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);    
+	else;
+	fclose(txt);
+}
+void printEnd(double angle)
+{
+    char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(angle));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"a");
+	double rot=-to_radians(angle);	
+	fprintf(txt,"  END\nEND\n");
+	fclose(txt);
+}
+void printProbe2(int p,double angle)
+{
+    char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(angle));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"a");
+	double rot=-to_radians(angle);;int m,o=0;	
+	fprintf(txt,"\nTABLE: Cp Values2\n  Table Exists = True\n  TABLE CELLS: \n");
+    do{
+    if(in(o/200)==26)fprintf(txt,"    A%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==27)fprintf(txt,"    B%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==28)fprintf(txt,"    C%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==29)fprintf(txt,"    D%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==30)fprintf(txt,"    E%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==31)fprintf(txt,"    F%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==32)fprintf(txt,"    G%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==33)fprintf(txt,"    H%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==34)fprintf(txt,"    I%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==35)fprintf(txt,"    J%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==36)fprintf(txt,"    K%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==37)fprintf(txt,"    L%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==38)fprintf(txt,"    M%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==39)fprintf(txt,"    N%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==40)fprintf(txt,"    O%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==41)fprintf(txt,"    P%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==42)fprintf(txt,"    Q%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==43)fprintf(txt,"    R%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+    else if(in(o/200)==44)fprintf(txt,"    S%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==45)fprintf(txt,"    T%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==46)fprintf(txt,"    U%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==47)fprintf(txt,"    V%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==48)fprintf(txt,"    W%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==49)fprintf(txt,"    X%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);
+	else if(in(o/200)==50)fprintf(txt,"    Y%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);	
+	else if(in(o/200)==51)fprintf(txt,"    Z%d = \"=(probe(Cp)@Point %d)/(1 [J kg^-1 K^-1])\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",o+1-(200*in(o/200)),o+1);		
+    else;o++;}while (o<p);
+	fclose(txt);
+}
+void printCpNet2(int n, int cpart, double angle)
+{
+    char angles[128];char fpath[]="degrees"; strcat(fpath,".txt"); sprintf(angles,"%d",in(angle));strcat(angles,fpath);FILE *txt; txt=fopen(angles,"a");
+	double rot=-to_radians(angle);	
+    if(in(n/200)==26)fprintf(txt,"    A%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==27)fprintf(txt,"    B%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==28)fprintf(txt,"    C%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==29)fprintf(txt,"    D%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==30)fprintf(txt,"    E%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==31)fprintf(txt,"    F%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==32)fprintf(txt,"    G%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==33)fprintf(txt,"    H%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==34)fprintf(txt,"    I%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+    else if(in(n/200)==35)fprintf(txt,"    J%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==36)fprintf(txt,"    K%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==37)fprintf(txt,"    L%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==38)fprintf(txt,"    M%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==39)fprintf(txt,"    N%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==40)fprintf(txt,"    O%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==41)fprintf(txt,"    P%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==42)fprintf(txt,"    Q%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==43)fprintf(txt,"    R%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+    else if(in(n/200)==44)fprintf(txt,"    S%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==45)fprintf(txt,"    T%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==46)fprintf(txt,"    U%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==47)fprintf(txt,"    V%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==48)fprintf(txt,"    W%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==49)fprintf(txt,"    X%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);
+	else if(in(n/200)==50)fprintf(txt,"    Y%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);	
+	else if(in(n/200)==51)fprintf(txt,"    Z%d = \"=((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))-((probe(Cp)@Point %d)/(1 [J kg^-1 K^-1]))\", False, False, False, Left, True, 0, Font Name, 1|1, %%10.3e, True, ffffff, 000000, True\n",n+1-(200*in(n/200)),n+1,cpart);    
+	else;
+	fclose(txt);
+}
+
+
+
+int main(int argc, char *argv[]) {
+		printf("UP Institute of Civil Engineering - Structural Engineering Group\n\"Enhanced Severe Wind Vulnerability Curves \nof Key Building Types in the Philippines\"\n--------------------------------------------\nAutomated Model, Probe, Wall Panel Pressure, and Fastener Force Generator\n--------------------------------------------\nDeveloped by: Engr. Joshua C. Agar\n\nGABLE ROOF - NOTE: There should exist a file within the folder named input.txt\ncontaining the following:\n*-height\n*-length\n*-width\n*-roof angle\n*-eaves long\n*-eaves side\n*-purlin spacing\n*-fastener spacing\n*-roof thickness\n*-height of 2nd storey\n*-wall braces\n*-height of 2nd storey column\n*nominal truss spacing\n\nEnter the translation (Modeling in ANSYS) in meters:");double trans;scanf("%lf",&trans);
+	/*Assigning the pointer for the input file */	
+	FILE * inputPtr; inputPtr=fopen("input.txt","r");
+	/*Scanning the input file*/ double height,length,width,roofPitch,eavesLong,eavesSide;fscanf(inputPtr,"%lf",&height);fscanf(inputPtr,"%lf",&length);fscanf(inputPtr,"%lf",&width);fscanf(inputPtr,"%lf",&roofPitch);fscanf(inputPtr,"%lf",&eavesLong);fscanf(inputPtr,"%lf",&eavesSide);
+	/*Wall Height and Pitch*/	double wallheight=height-((0.5*width)*tan(to_radians(roofPitch))), pitch=((0.5*width)*tan(to_radians(roofPitch)));
+	/*Wall Edges*/double wallEdgeA1x=-0.5*width,wallEdgeA2x=-0.5*width,wallEdgeA3x=0.5*width,wallEdgeA4x=0.5*width,wallEdgeA1z=wallheight,wallEdgeA2z=wallheight,wallEdgeA3z=wallheight,wallEdgeA4z=wallheight,wallEdgeA1y=0.5*length,wallEdgeA2y=-0.5*length,wallEdgeA3y=0.5*length,wallEdgeA4y=-0.5*length;	
+	/*Roof Edges*/double roofEdgeA1x=wallEdgeA1x-(eavesSide*cos(to_radians(roofPitch))),roofEdgeA2x=-0.5*width-(eavesSide*cos(to_radians(roofPitch))),roofEdgeA3x=0.5*width+(eavesSide*cos(to_radians(roofPitch))),roofEdgeA4x=0.5*width+(eavesSide*cos(to_radians(roofPitch))),roofEdgeA1z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeA2z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeA3z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeA4z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeA1y=(0.5*length)+eavesLong,roofEdgeA2y=-(0.5*length)-eavesLong,roofEdgeA3y=(0.5*length)+eavesLong,roofEdgeA4y=-(0.5*length)-eavesLong,roofEdgeB1x=wallEdgeA1x-(eavesSide*cos(to_radians(roofPitch))),roofEdgeB2x=-0.5*width-(eavesSide*cos(to_radians(roofPitch))),roofEdgeB3x=0.5*width+(eavesSide*cos(to_radians(roofPitch))),roofEdgeB4x=0.5*width+(eavesSide*cos(to_radians(roofPitch))),roofEdgeB1z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeB2z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeB3z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeB4z=wallheight-(eavesSide*sin(to_radians(roofPitch))),roofEdgeB1y=(0.5*length),roofEdgeB2y=-(0.5*length),roofEdgeB3y=(0.5*length),roofEdgeB4y=-(0.5*length);
+	/*Scanning the purlin spacing and fastener spacing*/ double fas,pur;fscanf(inputPtr,"%lf",&pur);fscanf(inputPtr,"%lf",&fas);
+	double x1st=(0.0254*(3+(3*tan(to_radians(roofPitch)))))*cos(to_radians(roofPitch)), z1st=height-((0.0254*(3+(3*tan(to_radians(roofPitch)))))*sin(to_radians(roofPitch))),    y1st=(0.5*length)+eavesLong-(0.5*((eavesLong+eavesLong+length)-(fas*in((eavesLong+eavesLong+length)/fas))));
+	/*Purlin Spacing*/	
+	double gable=pow(pow(pitch,2)+pow(0.5*width,2),0.5)+eavesSide-(0.0254*(6+(3*tan(to_radians(roofPitch))))); int purl=in(gable/pur)-1; double second2last=(0.0254*(3+(3*tan(to_radians(roofPitch)))))+(pur*purl); double x2last=second2last*cos(to_radians(roofPitch)),z2last=height-(second2last*sin(to_radians(roofPitch)));int fastener=(in((eavesLong+eavesLong+length)/fas)+1)*(purl+2),n=1,m=0;
+    double xlast=(pow(pow(pitch,2)+pow(0.5*width,2),0.5)+eavesSide-(0.0254*3))*cos(to_radians(roofPitch)), zlast=height-((pow(pow(pitch,2)+pow(0.5*width,2),0.5)+eavesSide-(0.0254*3))*sin(to_radians(roofPitch)));
+	double thick;fscanf(inputPtr,"%lf",&thick);double secStory,secWStorey,wBrace; fscanf(inputPtr,"%lf",&secWStorey);fscanf(inputPtr,"%lf",&wBrace);fscanf(inputPtr,"%lf",&secStory); double truss1;fscanf(inputPtr,"%lf",&truss1);fclose(inputPtr);
+	
+	/*SAP2000*/
+	int trass; if((length/truss1)-in(length/truss1)==0)trass=in(length/truss1)+1;else{trass=in(length/truss1)+2;}
+	double truss2=length/(trass-1); double trush[100];trush[0]=length/2;int o=0;do{trush[o+1]=trush[o]-truss2;o++;}while (trush[o]>=-length/2);
+	double trussapexx=0,trussapexy=height,truss1stx=x1st,truss1sty=z1st,truss2lastx=x2last,truss2lasty=z2last,trusslastx=xlast,trusslasty=zlast,trussedgex=(pow(pow(pitch,2)+pow(0.5*width,2),0.5)+eavesSide)*cos(to_radians(roofPitch)),trussedgey=height-((pow(pow(pitch,2)+pow(0.5*width,2),0.5)+eavesSide)*sin(to_radians(roofPitch)));
+	o=0; int p=0, q=((2*purl)+7);
+	/*deci1 - Total number of elements of the top members*/
+	int deci1=q*trass;
+	double trussx[15000],trussy[15000],trussz[15000]; trussx[0]=-trussedgex; trussz[0]=trussedgey; trussy[0]=trush[0]; 
+	do
+	{
+		if (fabs(trussx[p]-(-trussedgex))<0.0001) /*Checks if the node is at the edge on the negative x-axis*/
+		{trussx[p+1]=-trusslastx;trussz[p+1]=trusslasty;trussy[p+1]=trush[o];if(trussx[p]<-0.5*width) /*Additional check if this point is within the interior*/{if(trussx[p+1]>-0.5*width){trussx[p+1]=-0.5*width;trussz[p+1]=wallheight;trussy[p+1]=trush[o];trussx[p+2]=-trusslastx;trussz[p+2]=trusslasty;trussy[p+2]=trush[o];p++;deci1++;}else;}else;}
+		else if(fabs(trussx[p]-(-trusslastx))<0.0001)  /*Checks if the node is at the location of the first fastener*/
+		{trussx[p+1]=-truss2lastx;trussz[p+1]=truss2lasty;trussy[p+1]=trush[o];if(trussx[p]<-0.5*width){if(trussx[p+1]>-0.5*width){trussx[p+1]=-0.5*width;trussz[p+1]=wallheight;trussy[p+1]=trush[o];trussx[p+2]=-truss2lastx;trussz[p+2]=truss2lasty;trussy[p+2]=trush[o];p++;deci1++;}else;}else;}
+		else if(fabs(trussx[p]+truss1stx)<=0.001) /*Checks if the node is approaching the apex of the gable roof*/
+		{trussx[p+1]=trussapexx;trussz[p+1]=trussapexy;trussy[p+1]=trush[o];}
+		else if(fabs(trussx[p]-(-trussapexx))<0.0001)  /*Checks if the node is at the apex of the gable roof*/
+		{trussx[p+1]=truss1stx;trussz[p+1]=truss1sty;trussy[p+1]=trush[o];}
+		else if(fabs(trussx[p]-(truss2lastx))<0.0001) /*Checks if the node is at the 2nd to the last fastener location*/
+		{trussx[p+1]=trusslastx;trussz[p+1]=trusslasty;	trussy[p+1]=trush[o];if(trussx[p]<0.5*width){if(trussx[p+1]>0.5*width)/*Checks if the node is still at the interior of the building*/{trussx[p+1]=0.5*width;trussz[p+1]=wallheight;trussy[p+1]=trush[o];trussx[p+2]=trusslastx;trussz[p+2]=trusslasty;trussy[p+2]=trush[o];p++;deci1++;}else;}else;}
+		else if(fabs(trussx[p]-(trusslastx))<0.0001)  /*Checks if the node is at the location of the last fastener*/
+		{trussx[p+1]=trussedgex;trussz[p+1]=trussedgey;trussy[p+1]=trush[o];if(trussx[p]<0.5*width) /*Checks if the node is still at the interior of the building*/{if(trussx[p+1]>0.5*width){trussx[p+1]=0.5*width;trussz[p+1]=wallheight;trussy[p+1]=trush[o];trussx[p+2]=-trussedgex;trussz[p+2]=trussedgey;trussy[p+2]=trush[o];p++;deci1++;}else;}else;}
+		else if(fabs(trussx[p]-(trussedgex))<0.0001)  /*Checks if the node is still at the edge on the positive x*/
+		{trussx[p+1]=-trussedgex;trussz[p+1]=trussedgey;trussy[p+1]=trush[o+1];o++;}
+		else
+		{if(trussx[p]<0){trussx[p+1]=trussx[p]+(pur*cos(to_radians(roofPitch)));trussz[p+1]=trussz[p]+(pur*sin(to_radians(roofPitch)));trussy[p+1]=trush[o];
+		if(trussx[p]<-0.5*width){if(trussx[p+1]>-0.5*width){trussx[p+1]=-0.5*width;trussz[p+1]=wallheight;trussy[p+1]=trush[o];trussx[p+2]=trussx[p]+(pur*cos(to_radians(roofPitch)));trussz[p+2]=trussz[p]+(pur*sin(to_radians(roofPitch)));trussy[p+2]=trush[o];p++;deci1++;}else;}else;}
+		else{trussx[p+1]=trussx[p]+(pur*cos(to_radians(roofPitch)));trussz[p+1]=trussz[p]-(pur*sin(to_radians(roofPitch)));trussy[p+1]=trush[o];if(trussx[p]<0.5*width){if(trussx[p+1]>0.5*width){trussx[p+1]=0.5*width;trussz[p+1]=wallheight;trussy[p+1]=trush[o];trussx[p+2]=trussx[p]+(pur*cos(to_radians(roofPitch)));trussz[p+2]=trussz[p]-(pur*sin(to_radians(roofPitch)));trussy[p+2]=trush[o];p++;deci1++;}else;}else;}}
+		p++;
+	}while (p<deci1);
+	m=0;int deci2=0,deci3=p; /*deci2 - Number of nodes at the bottom members*/
+    /*Assigns nodes at the bottom section*/
+    do
+	{
+    if(trussy[m]>=wallEdgeA2y)
+	{
+    	if(trussy[m]<=wallEdgeA1y){if(trussx[m]>wallEdgeA1x){
+	    if(trussx[m]<wallEdgeA3x){trussx[deci3]=trussx[m];trussy[deci3]=trussy[m];trussz[deci3]=wallheight;deci3++;deci2++;}
+		else;}else;}else;}else;m++; 
+	}
+	while(m<p);
+	int deci5=deci2/trass, deci4=p/trass; /*deci4/deci5 - Number of nodes at the top/bottom member per truss*/
+	int i,j,em=1;
+	
+	double columnx[3000],columny[3000],columnz[3000],wallBracex[15000],wallBracey[15000],wallBracez[15000];
+	int deciwall=1,horinum1=truss2/wBrace,horinum2=width/wBrace,vertnum=secWStorey/wBrace; double offsetHeight=0.5*(secWStorey-(vertnum*wBrace)); if(fabs(secWStorey-(wBrace*vertnum))<0.0001){vertnum=(secWStorey/wBrace)+1;}else{vertnum=(secWStorey/wBrace)+3;}
+	double offsetLength=0.5*(truss2-(horinum1*wBrace)),offsetWidth=0.5*(width-(horinum2*wBrace));
+	double wallEdgeB1x=wallEdgeA1x,wallEdgeB2x=wallEdgeA2x,wallEdgeB3x=wallEdgeA3x,wallEdgeB4x=wallEdgeA4x,wallEdgeB1y=wallEdgeA1y,wallEdgeB2y=wallEdgeA2y,wallEdgeB3y=wallEdgeA3y,wallEdgeB4y=wallEdgeA4y,wallEdgeB1z=wallheight-secWStorey,wallEdgeB2z=wallheight-secWStorey,wallEdgeB3z=wallheight-secWStorey,wallEdgeB4z=wallheight-secWStorey;
+	
+	/*Column Profile*/
+	columnx[0]=-0.5*width;columny[0]=wallEdgeB1y;columnz[0]=wallheight-secWStorey;
+	do
+    {
+	if(offsetHeight<0.0001)
+	{
+	if(columnx[em-1]<0){if(fabs(columnz[em-1]-wallheight+wBrace)<0.0001){columnx[em]=-columnx[em-1];columny[em]=columny[em-1];columnz[em]=wallheight-secWStorey;}else{columnx[em]=columnx[em-1];columny[em]=columny[em-1];columnz[em]=columnz[em-1]+wBrace;}}
+	else if(columnx[em-1]>0)
+	{if(fabs(columnz[em-1]-wallheight+wBrace)<0.0001){columnx[em]=-columnx[em-1];columny[em]=columny[em-1]-truss2;columnz[em]=wallheight-secWStorey;}else{columnx[em]=columnx[em-1];columny[em]=columny[em-1];columnz[em]=columnz[em-1]+wBrace;}}}
+	else
+	{
+	if(columnx[em-1]<0)
+    {
+    if(fabs(columnz[em-1]-wallheight+secWStorey)<0.0001){columnx[em]=columnx[em-1];columny[em]=columny[em-1];columnz[em]=wallheight-secWStorey+offsetHeight;}
+	else if(fabs(columnz[em-1]-wallheight+offsetHeight)<0.0001){columnx[em]=-columnx[em-1];columny[em]=columny[em-1];columnz[em]=wallheight-secWStorey;}
+	else{columnx[em]=columnx[em-1];columny[em]=columny[em-1];columnz[em]=columnz[em-1]+wBrace;}
+	}
+	else if(columnx[em-1]>0)
+	{
+	if(fabs(columnz[em-1]-wallheight+secWStorey)<0.0001){columnx[em]=columnx[em-1];columny[em]=columny[em-1];columnz[em]=wallheight-secWStorey+offsetHeight;}
+	else if(fabs(columnz[em-1]-wallheight+offsetHeight)<0.0001){columnx[em]=-columnx[em-1];columny[em]=columny[em-1]-truss2;columnz[em]=wallheight-secWStorey;}
+	else{columnx[em]=columnx[em-1];columny[em]=columny[em-1];columnz[em]=columnz[em-1]+wBrace;}
+	}
+	}
+	em++;
+	}while(em<2*(((vertnum-1))*(trass)));
+	
+	/*Wall Profile*/
+    /*Case 1 - if there are no offset along the vertical*/
+    if(fabs(secWStorey-(in(secWStorey/wBrace)*wBrace))<0.0001)
+    {
+    	vertnum=in(secWStorey/wBrace)+1;
+		/*Case 1a - if there are no offset along the horizontal*/
+		if(fabs(width-(in(width/wBrace))*wBrace)<0.0001)
+		{
+		horinum2=in(width/wBrace)-1;wallBracex[0]=wallEdgeA1x+wBrace;wallBracey[0]=wallEdgeA1y;wallBracez[0]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall-1]-wallheight)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1]+wBrace;wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight-secWStorey;}
+		else{wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallBracez[deciwall-1]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<vertnum*horinum2);
+		}
+		/*Case 1b - if there is offset along the horizontal*/		
+		else
+		{
+		horinum2=in(width/wBrace)+1;wallBracex[0]=wallEdgeA1x+offsetWidth;wallBracey[0]=wallEdgeA1y;wallBracez[0]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall-1]-wallheight)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1]+wBrace;wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight-secWStorey;}
+		else{wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallBracez[deciwall-1]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<vertnum*horinum2);		
+		}
+	}
+	/*Case 2 - if there are offset along the vertical*/
+	else
+	{
+		vertnum=in(secWStorey/wBrace)+3;
+		/*Case 2a - if there are no offset along the horizontal*/
+		if(fabs(width-(in(width/wBrace))*wBrace)<0.0001)
+		{
+		horinum2=in(width/wBrace)-1;wallBracex[0]=wallEdgeA1x+wBrace;wallBracey[0]=wallEdgeA1y;wallBracez[0]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall-1]-wallheight)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1]+wBrace;wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight-secWStorey;}
+		else if(fabs(wallBracez[deciwall-1]-wallheight+secWStorey)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight-secWStorey+offsetHeight;}
+		else if(fabs(wallBracez[deciwall-1]-wallheight+offsetHeight)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight;}
+		else{wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallBracez[deciwall-1]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<vertnum*horinum2);
+		}
+		/*Case 2b - if there is offset along the horizontal*/		
+		else
+		{
+		horinum2=in(width/wBrace)+1;wallBracex[0]=wallEdgeA1x+offsetWidth;wallBracey[0]=wallEdgeA1y;wallBracez[0]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall-1]-wallheight)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1]+wBrace;wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight-secWStorey;}
+		else if(fabs(wallBracez[deciwall-1]-wallheight+secWStorey)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight-secWStorey+offsetHeight;}
+		else if(fabs(wallBracez[deciwall-1]-wallheight+offsetHeight)<0.0001){wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallheight;}
+		else{wallBracex[deciwall]=wallBracex[deciwall-1];wallBracey[deciwall]=wallBracey[deciwall-1];wallBracez[deciwall]=wallBracez[deciwall-1]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<vertnum*horinum2);		
+		}	
+	}
+	for(i=0;i<deciwall;i++)
+	{
+		wallBracex[i+deciwall]=wallBracex[i];wallBracey[i+deciwall]=-wallBracey[i];wallBracez[i+deciwall]=wallBracez[i];
+	}
+	int nodewidth=deciwall*2;deciwall=nodewidth;
+	
+	/*Along the truss*/
+    /*Case 1 - if there are no offset along the vertical*/
+    if(fabs(secWStorey-(in(secWStorey/wBrace)*wBrace))<0.0001)
+    {
+    	vertnum=in(secWStorey/wBrace)+1;
+		/*Case 1a - if there are no offset along the horizontal*/
+		if(fabs(truss2-(in(truss2/wBrace))*wBrace)<0.0001)
+		{
+		horinum1=in(truss2/wBrace)-1;wallBracex[deciwall]=wallEdgeA1x;wallBracey[deciwall]=wallEdgeA1y-wBrace;wallBracez[deciwall]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall]-wallheight)<0.0001){wallBracey[deciwall+1]=wallBracey[deciwall]-wBrace;wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight-secWStorey;}
+		else{wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallBracez[deciwall]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<nodewidth+(vertnum*horinum1));
+		}
+		/*Case 1b - if there is offset along the horizontal*/		
+		else
+		{
+		horinum1=in(truss2/wBrace)+1;wallBracey[deciwall]=wallEdgeA1y-fabs(offsetLength);wallBracex[deciwall]=wallEdgeA1x;wallBracez[deciwall]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall]-wallheight)<0.0001){wallBracey[deciwall+1]=wallBracey[deciwall]-wBrace;wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight-secWStorey;}
+		else{wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallBracez[deciwall]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<nodewidth+(vertnum*horinum1));		
+		}
+	}
+	/*Case 2 - if there are offset along the vertical*/
+	else
+	{
+		vertnum=in(secWStorey/wBrace)+3;
+		/*Case 2a - if there are no offset along the horizontal*/
+		if(fabs(truss2-(in(truss2/wBrace))*wBrace)<0.0001)
+		{
+		horinum1=in(truss2/wBrace)-1;wallBracey[deciwall]=wallEdgeA1y-wBrace;wallBracex[deciwall]=wallEdgeA1x;wallBracez[deciwall]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall]-wallheight)<0.0001){wallBracey[deciwall+1]=wallBracey[deciwall]-wBrace;wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight-secWStorey;}
+		else if(fabs(wallBracez[deciwall]-wallheight+secWStorey)<0.0001){wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight-secWStorey+offsetHeight;}
+		else if(fabs(wallBracez[deciwall]-wallheight+offsetHeight)<0.0001){wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight;}
+		else{wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallBracez[deciwall]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<nodewidth+(vertnum*horinum1));
+		}
+		/*Case 2b - if there is offset along the horizontal*/		
+		else
+		{
+		horinum1=in(truss2/wBrace)+1;wallBracey[deciwall]=wallEdgeA1y-fabs(offsetLength);wallBracex[deciwall]=wallEdgeA1x;wallBracez[deciwall]=wallheight-secWStorey;
+		do
+		{
+		if(fabs(wallBracez[deciwall]-wallheight)<0.0001)
+		{wallBracey[deciwall+1]=wallBracey[deciwall]-wBrace;wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight-secWStorey;}
+		else if(fabs(wallBracez[deciwall]-wallheight+secWStorey)<0.0001)
+		{wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight-secWStorey+offsetHeight;}
+		else if(fabs(wallBracez[deciwall]-wallheight+offsetHeight)<0.0001){wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallheight;}
+		else{wallBracey[deciwall+1]=wallBracey[deciwall];wallBracex[deciwall+1]=wallBracex[deciwall];wallBracez[deciwall+1]=wallBracez[deciwall]+wBrace;}
+		deciwall++;
+		}
+		while(deciwall<nodewidth+(vertnum*horinum1));		
+		}	
+	}    
+	for(i=0;i<vertnum*horinum1;i++){wallBracex[nodewidth+(vertnum*horinum1)+i]=-wallBracex[nodewidth+i];wallBracey[nodewidth+(vertnum*horinum1)+i]=wallBracey[nodewidth+i];wallBracez[nodewidth+(vertnum*horinum1)+i]=wallBracez[nodewidth+i];}
+	for(i=1;i<trass-1;i++)
+	{
+	for(j=0;j<2*vertnum*horinum1;j++){o=(i*2*vertnum*horinum1)+nodewidth+j;wallBracex[o]=wallBracex[nodewidth+j];wallBracey[o]=wallBracey[nodewidth+j]-(i*truss2);wallBracez[o]=wallBracez[nodewidth+j];}
+	}
+	deciwall=nodewidth+(2*vertnum*horinum1*(trass-1));
+
+	
+	FILE *sap2000;sap2000=fopen("SAP2000.txt","w");
+	FILE *sap2001;sap2001=fopen("length.csv","w");
+ 
+ 	fprintf(sap2000,"\n\nTABLE:  \"JOINT COORDINATES\"\n");	
+	/*Top Truss Nodes - Starts at 1 and ends at deci1*/for(i=0;i<deci1;i++){fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,trussx[i],trussy[i],trussz[i],trussx[i],trussy[i],trussz[i]);}
+	/*Bottom Truss Nodes - Starts at deci1 and ends at deci3*/for(i=deci1;i<deci3;i++)fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,trussx[i],trussy[i],trussz[i],trussx[i],trussy[i],trussz[i]);
+    /*Long Eaves Nodes neg - Starts at deci3 and ends at deci3+deci4*/for(i=deci3;i<deci3+deci4;i++){trussx[i]=trussx[i-deci3];trussy[i]=(0.5*length)+eavesLong;trussz[i]=trussz[i-deci3];fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,trussx[i],trussy[i],trussz[i],trussx[i],trussy[i],trussz[i]);	}
+    /*Long Eaves Nodes pos - Starts at deci3+deci4 and ends at deci3+2deci4*/for(i=deci3+deci4;i<deci3+deci4+deci4;i++){trussx[i]=trussx[i-(deci3+deci4)];trussy[i]=(-0.5*length)-eavesLong;trussz[i]=trussz[i-(deci3+deci4)];fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,trussx[i],trussy[i],trussz[i],trussx[i],trussy[i],trussz[i]);}
+	/*Column Nodes - Starts at deci3+2deci4 and ends at deci3+2deci4+em*/for(i=deci3+(2*deci4);i<deci3+(2*deci4)+em;i++){fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,columnx[i-(deci3+(2*deci4))],columny[i-(deci3+(2*deci4))],columnz[i-(deci3+(2*deci4))],columnx[i-(deci3+(2*deci4))],columny[i-(deci3+(2*deci4))],columnz[i-(deci3+(2*deci4))]);}
+	/*Wall Brace Nodes - Starts at deci3+2deci4+em* and ends at deci3+2deci4+em+deciwall*/int deciwal=deci3+(2*deci4)+em;for(i=deciwal;i<deciwal+deciwall;i++){fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,wallBracex[i-deciwal],wallBracey[i-deciwal],wallBracez[i-deciwal],wallBracex[i-deciwal],wallBracey[i-deciwal],wallBracez[i-deciwal]);}
+	/*Purlin Nodes Starts at deci3+2deci4*em*deciwall*/ int purstart=deci3+(2*deci4)+em+deciwall, purend=deci3+(2*deci4)+em+deciwall+(fastener*2), purnum=in((eavesLong+eavesLong+length)/fas)+1,pindex=0;double purx[15000],pury[15000],purz[15000];
+	for(i=0;i<deci4;i++)
+	{
+	if(fabs(fabs(trussx[i])-trussedgex)<0.0001);else if(fabs(fabs(trussx[i])-trussapexx)<0.0001);else if(fabs(fabs(trussx[i])-(0.5*width))<0.0001);
+	else{purx[pindex]=trussx[i];pury[pindex]=y1st;purz[pindex]=trussz[i]; pindex++;}
+	}
+	int prow=pindex;
+	for(i=1;i<purnum;i++)
+	{
+	for(j=0;j<prow;j++)
+	{
+	purx[(i*prow)+j]=purx[j]; pury[(i*prow)+j]=y1st-(fas*i); purz[(i*prow)+j]=purz[j];
+	}
+	}
+	n=fastener*2;m=0; int cpart[10000];
+	do
+	{
+    if (purx[m]<=wallEdgeA1x){purx[n]=purx[m];purz[n]=purz[m]-thick;pury[n]=pury[m];cpart[n]=m;n++;}
+	else if (purx[m]>=wallEdgeA3x){purx[n]=purx[m];purz[n]=purz[m]-thick;pury[n]=pury[m];cpart[n]=m;n++;}
+	else
+	{
+		if (pury[m]>=wallEdgeA1y){purx[n]=purx[m];purz[n]=purz[m]-thick;pury[n]=pury[m];cpart[n]=m;n++;}
+		else if (pury[m]<=wallEdgeA2y){purx[n]=purx[m];purz[n]=purz[m]-thick;pury[n]=pury[m];cpart[n]=m;n++;}
+		else;
+	}
+    m++;
+	}
+	while(m<fastener*2);
+	int ii; for(ii=0;ii<7;ii++){printProbe1(n,fastener*2,purx,purz,pury,trans,15*ii);printEnd(15*ii);printProbe2(n,15*ii);printEnd(15*ii);}
+	
+	int pbef[100],paft[100];
+
+	for(i=0;i<trass;i++)
+	{
+	pbef[i]=in((y1st-trush[i])/fas); paft[i]=pbef[i]+1;
+	}
+
+	for(i=purstart;i<purend;i++)fprintf(sap2000,"Joint=%d   CoordSys=GLOBAL   CoordType=Cartesian   XorR=%lf   Y=%lf   Z=%lf   SpecialJt=No   GlobalX=%lf   GlobalY=%lf   GlobalZ=%lf   \n",i+1,purx[i-purstart],pury[i-purstart],purz[i-purstart],purx[i-purstart],pury[i-purstart],purz[i-purstart]);
+	fprintf(sap2000,"\nTABLE:  \"CONNECTIVITY - FRAME\"\n");int deci7=0,k,el;
+	int decia;for(decia=0;decia<deci4;decia++)if(fabs(trussx[decia]+(0.5*width))<0.0001)break;
+	int decib;for(decib=0;decib<deci4;decib++)if(fabs(trussx[decib]-(0.5*width))<0.0001)break;
+	for(i=0;i<trass;i++)
+	{
+	/*Top Truss Elements*/
+	for(j=0;j<deci4-1;j++){	k=(i*deci4)+j;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,k+2,pow(pow(trussx[k]-trussx[k+1],2)+pow(trussy[k]-trussy[k+1],2)+pow(trussz[k]-trussz[k+1],2),0.5),ave(trussx[k],trussx[k+1]),ave(trussy[k],trussy[k+1]),ave(trussz[k],trussz[k+1]));deci7++;}
+	/*Bottom Truss Elements*/
+	k=((i*deci4)+decia);el=deci1+(i*deci5);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;	
+	for(j=0;j<deci5-1;j++){k=deci1+(i*deci5)+j;el=deci1+(i*deci5)+j+1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;}
+	k=deci1+(i*deci5)+j;el=((i*deci4)+decib);fprintf(sap2001,"   Frame=%d   JointI=%d   JointJ=%d   IsCurved=No   Length=%lf   CentroidX=%lf  CentroidY=%lf   CentroidZ=%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;	
+	/*Vertical Truss Elements*/
+	for(j=decia+1;j<decib;j++){k=(i*deci4)+j;el=deci1+(i*deci5)+j-decia-1;if(fabs(fabs(trussx[k])-x1st)>0.0001){fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;}}
+	/*Diagonal Truss Elements*/
+	for(j=decia+1;j<in(deci4/2)-1;j++){k=(i*deci4)+j;el=-(decia+1)+deci1+(i*deci5)+j+1;if(fabs(trussx[-(decia+1)+deci1+(i*deci5)+j+1]+x1st)<0.0001){el=-(decia+1)+deci1+(i*deci5)+j+2;}else;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;}
+	for(j=in(deci4/2)+2;j<decib;j++){k=deci1+(i*deci5)+j-decia-2;el=(i*deci4)+j;if(fabs(trussx[deci1+(i*deci5)+j-decia-2]-x1st)<0.0001){k=deci1+(i*deci5)+j-decia-3;}else;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;}
+	}
+	int trusses=deci7;
+	/*Purlin Elements*/
+	/*Starting from the positive end of the purlins*/
+	int purcount=0,kk;for(j=0;j<deci4;j++){k=deci3+j;el=purstart+purcount;if(fabs(fabs(trussx[k])-trussedgex)<0.0001);else if(fabs(fabs(trussx[k])-trussapexx)<0.0001);else if(fabs(fabs(trussx[k])-(0.5*width))<0.0001);else{fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-purx[el-purstart],2)+pow(trussy[k]-pury[el-purstart],2)+pow(trussz[k]-purz[el-purstart],2),0.5),ave(trussx[k],purx[el-purstart]),ave(trussy[k],pury[el-purstart]),ave(trussz[k],purz[el-purstart]));purcount++;deci7++;}}
+	/*Span of the positive long eaves*/
+	for(j=0;j<pbef[0];j++){for(kk=0;kk<prow;kk++){k=purstart+(j*prow)+kk;el=purstart+((j+1)*prow)+kk;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(purx[k-purstart]-purx[el-purstart],2)+pow(pury[k-purstart]-pury[el-purstart],2)+pow(purz[k-purstart]-purz[el-purstart],2),0.5),ave(purx[k-purstart],purx[el-purstart]),ave(pury[k-purstart],pury[el-purstart]),ave(purz[k-purstart],purz[el-purstart]));deci7++;}}
+		
+	for(i=0;i<trass-1;i++)
+	{
+	/*Approaching the truss*/
+	purcount=0;for(j=0;j<deci4;j++){el=j+(deci4*i);k=purstart+purcount+(prow*pbef[i]);if(fabs(fabs(trussx[el])-trussedgex)<0.0001);else if(fabs(fabs(trussx[el])-trussapexx)<0.0001);else if(fabs(fabs(trussx[el])-(0.5*width))<0.0001);else{fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-purx[k-purstart],2)+pow(trussy[el]-pury[k-purstart],2)+pow(trussz[el]-purz[k-purstart],2),0.5),ave(trussx[el],purx[k-purstart]),ave(trussy[el],pury[k-purstart]),ave(trussz[el],purz[k-purstart]));purcount++;deci7++;}}
+	/*After the truss*/
+	purcount=0;for(j=0;j<deci4;j++){k=j+(deci4*i);el=purstart+purcount+(prow*paft[i]);if(fabs(fabs(trussx[k])-trussedgex)<0.0001);else if(fabs(fabs(trussx[k])-trussapexx)<0.0001);else if(fabs(fabs(trussx[k])-(0.5*width))<0.0001);else{fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-purx[k-purstart],2)+pow(trussy[el]-pury[k-purstart],2)+pow(trussz[el]-purz[k-purstart],2),0.5),ave(trussx[el],purx[k-purstart]),ave(trussy[el],pury[k-purstart]),ave(trussz[el],purz[k-purstart]));purcount++;deci7++;}}
+	/*In Between*/
+	for(kk=paft[i];kk<pbef[i+1];kk++){for(j=0;j<prow;j++){k=purstart+(kk*prow)+j; el=purstart+((kk+1)*prow)+j;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(purx[el-purstart]-purx[k-purstart],2)+pow(pury[el-purstart]-pury[k-purstart],2)+pow(purz[el-purstart]-purz[k-purstart],2),0.5),ave(purx[el-purstart],purx[k-purstart]),ave(pury[el-purstart],pury[k-purstart]),ave(purz[el-purstart],purz[k-purstart]));deci7++;}}	
+	}
+	/*Approaching the truss*/
+	purcount=0;for(j=0;j<deci4;j++){el=j+(deci4*(trass-1));k=purstart+purcount+(prow*pbef[(trass-1)]);if(fabs(fabs(trussx[el])-trussedgex)<0.0001);else if(fabs(fabs(trussx[el])-trussapexx)<0.0001);else if(fabs(fabs(trussx[el])-(0.5*width))<0.0001);else{fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-purx[k-purstart],2)+pow(trussy[el]-pury[k-purstart],2)+pow(trussz[el]-purz[k-purstart],2),0.5),ave(trussx[el],purx[k-purstart]),ave(trussy[el],pury[k-purstart]),ave(trussz[el],purz[k-purstart]));purcount++;deci7++;}}
+	/*After the truss*/
+	purcount=0;for(j=0;j<deci4;j++){k=j+(deci4*(trass-1));el=purstart+purcount+(prow*paft[(trass-1)]);if(fabs(fabs(trussx[k])-trussedgex)<0.0001);else if(fabs(fabs(trussx[k])-trussapexx)<0.0001);else if(fabs(fabs(trussx[k])-(0.5*width))<0.0001);else{fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-purx[k-purstart],2)+pow(trussy[el]-pury[k-purstart],2)+pow(trussz[el]-purz[k-purstart],2),0.5),ave(trussx[el],purx[k-purstart]),ave(trussy[el],pury[k-purstart]),ave(trussz[el],purz[k-purstart]));purcount++;deci7++;}}
+	/*Span of the negative long eaves*/
+	for(j=paft[trass-1];j<purnum-1;j++){for(kk=0;kk<prow;kk++){k=purstart+(j*prow)+kk;el=purstart+((j+1)*prow)+kk;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(purx[k-purstart]-purx[el-purstart],2)+pow(pury[k-purstart]-pury[el-purstart],2)+pow(purz[k-purstart]-purz[el-purstart],2),0.5),ave(purx[k-purstart],purx[el-purstart]),ave(pury[k-purstart],pury[el-purstart]),ave(purz[k-purstart],purz[el-purstart]));deci7++;}}
+	/*Ending at the negative end of the purlins*/
+	purcount=0;for(j=0;j<deci4;j++){el=deci3+deci4+j;k=purstart+purcount+(((purnum-1)*prow));if(fabs(fabs(trussx[el])-trussedgex)<0.0001);else if(fabs(fabs(trussx[el])-trussapexx)<0.0001);else if(fabs(fabs(trussx[el])-(0.5*width))<0.0001);else{fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-purx[k-purstart],2)+pow(trussy[el]-pury[k-purstart],2)+pow(trussz[el]-purz[k-purstart],2),0.5),ave(trussx[el],purx[k-purstart]),ave(trussy[el],pury[k-purstart]),ave(trussz[el],purz[k-purstart]));purcount++;deci7++;}}
+	int purlins=deci7,deci8=em/trass,decim1=deci3+(2*deci4),decim2=deci1/trass;/*deci8 - number of column nodes per truss; decim1=starting node for columns*/
+	/*Column Elements*/
+	for(i=0;i<trass;i++)
+	{
+		for(j=0;j<(deci8/2)-1;j++)
+		{k=decim1+j+(i*deci8); el=decim1+j+(i*deci8)+1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-decim1]-columnx[el-decim1],2)+pow(columny[k-decim1]-columny[el-decim1],2)+pow(columnz[k-decim1]-columnz[el-decim1],2),0.5),ave(columnx[k-decim1],columnx[el-decim1]),ave(columny[k-decim1],columny[el-decim1]),ave(columnz[k-decim1],columnz[el-decim1]));deci7++;}
+		k=decim1+(deci8/2)+(i*deci8)-1;el=(i*decim2)+decia;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-decim1]-trussx[el],2)+pow(columny[k-decim1]-trussy[el],2)+pow(columnz[k-decim1]-trussz[el],2),0.5),ave(columnx[k-decim1],trussx[el]),ave(columny[k-decim1],trussy[el]),ave(columnz[k-decim1],trussz[el]));deci7++;
+		for(j=(deci8/2);j<deci8-1;j++){k=decim1+j+(i*deci8); el=decim1+j+(i*deci8)+1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-decim1]-columnx[el-decim1],2)+pow(columny[k-decim1]-columny[el-decim1],2)+pow(columnz[k-decim1]-columnz[el-decim1],2),0.5),ave(columnx[k-decim1],columnx[el-decim1]),ave(columny[k-decim1],columny[el-decim1]),ave(columnz[k-decim1],columnz[el-decim1]));deci7++;}
+		k=decim1+(deci8-1)+(i*deci8);el=(i*decim2)+decib;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-decim1]-trussx[el],2)+pow(columny[k-decim1]-trussy[el],2)+pow(columnz[k-decim1]-trussz[el],2),0.5),ave(columnx[k-decim1],trussx[el]),ave(columny[k-decim1],trussy[el]),ave(columnz[k-decim1],trussz[el]));deci7++;
+	}
+	int decim3=deci7; int columns=deci7;
+   /*Lateral Beams acting as diaphragms- Roof*/
+	/*for(i=1;i<trass;i++)
+	{
+		k=((i-1)*decim2)+decia;el=((i)*decim2)+decia;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;
+		k=((i-1)*decim2)+decib;el=((i)*decim2)+decib;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-trussx[el],2)+pow(trussy[k]-trussy[el],2)+pow(trussz[k]-trussz[el],2),0.5),ave(trussx[k],trussx[el]),ave(trussy[k],trussy[el]),ave(trussz[k],trussz[el]));deci7++;
+	}*/
+	int decim4=deci7; int beams=deci7;
+	/*Vertical Braces*/
+	for(i=0;i<2*(horinum2)*(trass-1);i++){for(j=0;j<vertnum-1;j++){k=(i*vertnum)+j+deciwal;el=(i*vertnum)+j+1+deciwal;if(pow(pow(wallBracex[k-deciwal]-wallBracex[el-deciwal],2)+pow(wallBracey[k-deciwal]-wallBracey[el-deciwal],2)+pow(wallBracez[k-deciwal]-wallBracez[el-deciwal],2),0.5)>0){fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-deciwal]-wallBracex[el-deciwal],2)+pow(wallBracey[k-deciwal]-wallBracey[el-deciwal],2)+pow(wallBracez[k-deciwal]-wallBracez[el-deciwal],2),0.5),ave(wallBracex[k-deciwal],wallBracex[el-deciwal]),ave(wallBracey[k-deciwal],wallBracey[el-deciwal]),ave(wallBracez[k-deciwal],wallBracez[el-deciwal]));deci7++;}}}	
+	int vertbrace=deci7;
+	/*Horizontal Braces - Front*/
+	for(i=0;i<vertnum-1;i++)
+	{
+	/*Column to wall brace*/k=deci3+(2*deci4)+i; el=deci3+(2*deci4)+em+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-(deci3+(2*deci4))]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(columny[k-(deci3+(2*deci4))]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(columnz[k-(deci3+(2*deci4))]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[k-(deci3+(2*deci4))],wallBracex[el-(deci3+(2*deci4)+em)]),ave(columny[k-(deci3+(2*deci4))],wallBracey[el-(deci3+(2*deci4)+em)]),ave(columnz[k-(deci3+(2*deci4))],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+	/*Wall brace to wall brace*/for(j=0;j<horinum2-1;j++){k=deci3+(2*deci4)+em+i+(j*vertnum); el=deci3+(2*deci4)+em+i+((j+1)*vertnum);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall brace to column*/k=deci3+(2*deci4)+em+i+((horinum2-1)*vertnum);el=deci3+(2*deci4)+i+vertnum-1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[el-(deci3+(2*deci4))]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(columny[el-(deci3+(2*deci4))]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(columnz[el-(deci3+(2*deci4))]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[el-(deci3+(2*deci4))],wallBracex[k-(deci3+(2*deci4)+em)]),ave(columny[el-(deci3+(2*deci4))],wallBracey[k-(deci3+(2*deci4)+em)]),ave(columnz[el-(deci3+(2*deci4))],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	}
+	/*Top column to wall brace*/k=decia+((0)*deci4); el=deci3+(2*deci4)+em+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(trussy[k]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(trussz[k]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[k],wallBracex[el-(deci3+(2*deci4)+em)]),ave(trussy[k],wallBracey[el-(deci3+(2*deci4)+em)]),ave(trussz[k],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+	/*Top wall brace to wall brace*/for(j=0;j<horinum2-1;j++){k=deci3+(2*deci4)+em+vertnum-1+(j*vertnum); el=deci3+(2*deci4)+em+vertnum-1+((j+1)*vertnum);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall brace to top column*/el=decib+((0)*deci4);k=deci3+(2*deci4)+em+vertnum-1+((horinum2-1)*vertnum);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(trussy[el]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(trussz[el]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[el],wallBracex[k-(deci3+(2*deci4)+em)]),ave(trussy[el],wallBracey[k-(deci3+(2*deci4)+em)]),ave(trussz[el],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	int horbracefront=deci7;
+	
+	/*Horizontal Braces - Back*/
+	for(i=0;i<vertnum-1;i++)
+	{
+	/*Column to wall brace*/k=deci3+(2*deci4)+i+((vertnum-1)*2*(trass-1)); el=deci3+(2*deci4)+em+(horinum2*vertnum)+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-(deci3+(2*deci4))]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(columny[k-(deci3+(2*deci4))]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(columnz[k-(deci3+(2*deci4))]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[k-(deci3+(2*deci4))],wallBracex[el-(deci3+(2*deci4)+em)]),ave(columny[k-(deci3+(2*deci4))],wallBracey[el-(deci3+(2*deci4)+em)]),ave(columnz[k-(deci3+(2*deci4))],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+	/*Wall brace to wall brace*/for(j=0;j<horinum2-1;j++){k=deci3+(2*deci4)+em+i+(horinum2*vertnum)+(j*vertnum); el=deci3+(2*deci4)+em+i+(horinum2*vertnum)+((j+1)*vertnum);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall brace to column*/k=deci3+(2*deci4)+em+i+(horinum2*vertnum)+((horinum2-1)*vertnum);el=deci3+(2*deci4)+i+vertnum-1+((vertnum-1)*2*(trass-1));fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[el-(deci3+(2*deci4))]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(columny[el-(deci3+(2*deci4))]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(columnz[el-(deci3+(2*deci4))]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[el-(deci3+(2*deci4))],wallBracex[k-(deci3+(2*deci4)+em)]),ave(columny[el-(deci3+(2*deci4))],wallBracey[k-(deci3+(2*deci4)+em)]),ave(columnz[el-(deci3+(2*deci4))],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	}
+	/*Top column to wall brace*/k=decia+((trass-1)*deci4);el=deci3+(2*deci4)+(vertnum*horinum2)+em+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(trussy[k]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(trussz[k]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[k],wallBracex[el-(deci3+(2*deci4)+em)]),ave(trussy[k],wallBracey[el-(deci3+(2*deci4)+em)]),ave(trussz[k],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+	/*Wall brace to wall brace*/for(j=0;j<horinum2-1;j++){k=deci3+(2*deci4)+em+(vertnum-1)+(horinum2*vertnum)+(j*vertnum); el=deci3+(2*deci4)+em+(vertnum-1)+(horinum2*vertnum)+((j+1)*vertnum);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall brace to column*/el=decib+((trass-1)*deci4);k=deci3+(2*deci4)+em+vertnum-1+((horinum2-1)*vertnum)+(vertnum*horinum2);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(trussy[el]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(trussz[el]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[el],wallBracex[k-(deci3+(2*deci4)+em)]),ave(trussy[el],wallBracey[k-(deci3+(2*deci4)+em)]),ave(trussz[el],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	int horbraceback=deci7;
+	int horref=deci3+(2*deci4)+em+(2*vertnum*horinum2),numlength=deciwall-(2*vertnum*horinum2);
+	
+	/*Horizontal Braces - Truss Span*/
+	for(o=0;o<(trass-1);o++)
+	{
+	for(i=0;i<vertnum-1;i++)
+	{
+	/*Column to wall brace*/k=deci3+(2*deci4)+i+((vertnum-1)*o*2) /*Column*/; el= horref+(o*horinum1*vertnum*2)+i /*WallBrace*/;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-(deci3+(2*deci4))]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(columny[k-(deci3+(2*deci4))]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(columnz[k-(deci3+(2*deci4))]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[k-(deci3+(2*deci4))],wallBracex[el-(deci3+(2*deci4)+em)]),ave(columny[k-(deci3+(2*deci4))],wallBracey[el-(deci3+(2*deci4)+em)]),ave(columnz[k-(deci3+(2*deci4))],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+    /*Wall Brace to Wall Brace*/for(j=0;j<horinum1-1;j++){k=horref+(o*horinum1*vertnum*2)+(j*vertnum)+i; el=horref+(o*horinum1*vertnum*2)+((j+1)*vertnum)+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall Brace to Column*/el=deci3+(2*deci4)+i+((vertnum-1)*(o+1)*2);k=horref+(o*horinum1*vertnum*2)+((horinum1-1)*vertnum)+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[el-(deci3+(2*deci4))]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(columny[el-(deci3+(2*deci4))]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(columnz[el-(deci3+(2*deci4))]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[el-(deci3+(2*deci4))],wallBracex[k-(deci3+(2*deci4)+em)]),ave(columny[el-(deci3+(2*deci4))],wallBracey[k-(deci3+(2*deci4)+em)]),ave(columnz[el-(deci3+(2*deci4))],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+    }
+    /*Top column to wall brace*/k=decia+(o*deci4); el=horref+(o*horinum1*vertnum*2)+vertnum-1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(trussy[k]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(trussz[k]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[k],wallBracex[el-(deci3+(2*deci4)+em)]),ave(trussy[k],wallBracey[el-(deci3+(2*deci4)+em)]),ave(trussz[k],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+	/*Wall Brace to Wall Brace*/for(j=0;j<horinum1-1;j++){k=horref+(o*horinum1*vertnum*2)+(j*vertnum)+vertnum-1; el=horref+(o*horinum1*vertnum*2)+((j+1)*vertnum)+vertnum-1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall Brace to Top Column*/k=horref+(o*horinum1*vertnum*2)+((horinum1-1)*vertnum)+vertnum-1;el=decia+((o+1)*deci4);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(trussy[el]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(trussz[el]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[el],wallBracex[k-(deci3+(2*deci4)+em)]),ave(trussy[el],wallBracey[k-(deci3+(2*deci4)+em)]),ave(trussz[el],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	for(i=0;i<vertnum-1;i++)
+	{	
+	/*Column to wall brace*/k=deci3+(2*deci4)+i+((vertnum-1)*((2*o)+1)) /*Column*/; el= horref+(((2*o)+1)*horinum1*vertnum)+i /*WallBrace*/;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[k-(deci3+(2*deci4))]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(columny[k-(deci3+(2*deci4))]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(columnz[k-(deci3+(2*deci4))]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[k-(deci3+(2*deci4))],wallBracex[el-(deci3+(2*deci4)+em)]),ave(columny[k-(deci3+(2*deci4))],wallBracey[el-(deci3+(2*deci4)+em)]),ave(columnz[k-(deci3+(2*deci4))],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+    /*Wall Brace to Wall Brace*/for(j=0;j<horinum1-1;j++){k=horref+(((2*o)+1)*horinum1*vertnum)+(j*vertnum)+i; el=horref+(((2*o)+1)*horinum1*vertnum)+((j+1)*vertnum)+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall Brace to Column*/el=deci3+(2*deci4)+i+((vertnum-1)*((2*o)+3));k=horref+(horinum1*vertnum*((2*o)+1))+((horinum1-1)*vertnum)+i;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(columnx[el-(deci3+(2*deci4))]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(columny[el-(deci3+(2*deci4))]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(columnz[el-(deci3+(2*deci4))]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(columnx[el-(deci3+(2*deci4))],wallBracex[k-(deci3+(2*deci4)+em)]),ave(columny[el-(deci3+(2*deci4))],wallBracey[k-(deci3+(2*deci4)+em)]),ave(columnz[el-(deci3+(2*deci4))],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	}
+	/*Top column to wall brace*/k=decib+(o*deci4); el=horref+(horinum1*vertnum*((2*o)+1))+vertnum-1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[k]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(trussy[k]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(trussz[k]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[k],wallBracex[el-(deci3+(2*deci4)+em)]),ave(trussy[k],wallBracey[el-(deci3+(2*deci4)+em)]),ave(trussz[k],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;
+	/*Wall Brace to Wall Brace*/for(j=0;j<horinum1-1;j++){k=horref+(horinum1*vertnum*((2*o)+1))+(j*vertnum)+vertnum-1; el=horref+(horinum1*vertnum*((2*o)+1))+((j+1)*vertnum)+vertnum-1;fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(wallBracex[k-(deci3+(2*deci4)+em)]-wallBracex[el-(deci3+(2*deci4)+em)],2)+pow(wallBracey[k-(deci3+(2*deci4)+em)]-wallBracey[el-(deci3+(2*deci4)+em)],2)+pow(wallBracez[k-(deci3+(2*deci4)+em)]-wallBracez[el-(deci3+(2*deci4)+em)],2),0.5),ave(wallBracex[k-(deci3+(2*deci4)+em)],wallBracex[el-(deci3+(2*deci4)+em)]),ave(wallBracey[k-(deci3+(2*deci4)+em)],wallBracey[el-(deci3+(2*deci4)+em)]),ave(wallBracez[k-(deci3+(2*deci4)+em)],wallBracez[el-(deci3+(2*deci4)+em)]));deci7++;}
+	/*Wall Brace to Top Column*/k=horref+(horinum1*vertnum*((2*o)+1))+((horinum1-1)*vertnum)+vertnum-1;el=decib+((o+1)*deci4);fprintf(sap2001,"%d,%d,%d,%lf,%lf,%lf,%lf\n",deci7+1,k+1,el+1,pow(pow(trussx[el]-wallBracex[k-(deci3+(2*deci4)+em)],2)+pow(trussy[el]-wallBracey[k-(deci3+(2*deci4)+em)],2)+pow(trussz[el]-wallBracez[k-(deci3+(2*deci4)+em)],2),0.5),ave(trussx[el],wallBracex[k-(deci3+(2*deci4)+em)]),ave(trussy[el],wallBracey[k-(deci3+(2*deci4)+em)]),ave(trussz[el],wallBracez[k-(deci3+(2*deci4)+em)]));deci7++;
+	}
+	fclose(sap2001);
+	fprintf(sap2000,"\nTABLE:  \"JOINT RESTRAINT ASSIGNMENTS\"\n");	
+	for(i=0;i<2*trass;i++)fprintf(sap2000,"Joint=%d  U1=Yes   U2=Yes   U3=Yes   R1=No   R2=No   R3=No\n",(((vertnum-1)*i)+1)+deci3+deci4+deci4);
+	
+	fprintf(sap2000,"\nTABLE:  \"FRAME SECTION ASSIGNMENTS\"\n"); int decitruss=0;
+    for(i=0;i<trusses;i++)fprintf(sap2000,"   Frame=%d   SectionType=\"SD Section\"   AutoSelect=N.A.   AnalSect=W2x4   DesignSect=N.A.   MatProp=Default\n",i+1);
+	for(i=trusses;i<purlins;i++)fprintf(sap2000,"   Frame=%d   SectionType=\"SD Section\"   AutoSelect=N.A.   AnalSect=W2x3   DesignSect=N.A.   MatProp=Default\n",i+1);
+	for(i=purlins;i<columns;i++)fprintf(sap2000,"   Frame=%d   SectionType=\"SD Section\"   AutoSelect=N.A.   AnalSect=2W2x4   DesignSect=N.A.   MatProp=Default\n",i+1);
+	for(i=columns;i<deci7;i++)fprintf(sap2000,"   Frame=%d   SectionType=\"SD Section\"   AutoSelect=N.A.   AnalSect=W2x2   DesignSect=N.A.   MatProp=Default\n",i+1);
+	
+	fprintf(sap2000,"\nTABLE:  \"FRAME LOCAL AXES ASSIGNMENTS 1 - TYPICAL\"\n");
+	for(i=0;i<trusses;i++)fprintf(sap2000,"   Frame=%d   Angle=0   AdvanceAxes=No\n",i+1); decitruss=trusses;
+	for(j=0;j<deci4;j++)
+	{el=+j;k=deci3+j;if(fabs(fabs(trussx[k])-trussedgex)<0.0001);else if(fabs(fabs(trussx[k])-trussapexx)<0.0001);else if(fabs(fabs(trussx[k])-(0.5*width))<0.0001);
+	else{
+	if(trussx[k]>0){fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",decitruss+1,-roofPitch);decitruss++;}
+	else if(trussx[k]<0){fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",decitruss+1,roofPitch);decitruss++;}}
+	}
+	for(i=0;i<trass-1;i++)
+	{
+	for(j=0;j<deci4;j++)
+    {k=(i*deci4)+j;el=((i+1)*deci4)+j;
+	if(fabs(fabs(trussx[k])-trussedgex)<0.0001);
+	else if(fabs(fabs(trussx[k])-trussapexx)<0.0001);
+	else if(fabs(fabs(trussx[k])-(0.5*width))<0.0001);
+	else
+	{if(trussx[k]>0){fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",decitruss+1,-roofPitch);decitruss++;}
+	else if(trussx[k]<0){fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",decitruss+1,roofPitch);decitruss++;}
+	}}}
+	for(j=0;j<deci4;j++)
+	{
+	k=((trass-1)*deci4)+j;el=deci3+deci4+j;
+	if(fabs(fabs(trussx[k])-trussedgex)<0.0001);
+	else if(fabs(fabs(trussx[k])-trussapexx)<0.0001);
+	else if(fabs(fabs(trussx[k])-(0.5*width))<0.0001);
+	else
+	{
+	if(trussx[k]>0){fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",decitruss+1,-roofPitch);decitruss++;}
+	else if(trussx[k]<0){fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",decitruss+1,roofPitch);decitruss++;}
+	}}
+	for(i=purlins;i<columns;i++)fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",i+1);
+	for(i=columns;i<deci7;i++)fprintf(sap2000,"   Frame=%d   Angle=%lf   AdvanceAxes=No\n",i+1);
+
+			
+	int braces=deci7,area1,area2,area3,area4,areacount=0; double areax,areay,areaz,polyarea,perimeter,ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z;
+	fprintf(sap2000,"\nTABLE:  \"CONNECTIVITY - AREA\"\n");
+/*Area Connectivity*/ double parea[5000];
+	/*Horizontal Braces - Front*/
+	for(i=0;i<vertnum-2;i++)
+	{
+	/*Column to wall brace*/area1=deci3+(2*deci4)+i; area2=deci3+(2*deci4)+em+i;area4=deci3+(2*deci4)+i+1; area3=deci3+(2*deci4)+em+i+1;ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar4x=columnx[area4-(deci3+(2*deci4))];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar4y=columny[area4-(deci3+(2*deci4))];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar4z=columnz[area4-(deci3+(2*deci4))];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;  
+
+	/*Wall brace to wall brace*/for(j=0;j<horinum2-1;j++){area1=deci3+(2*deci4)+em+i+(j*vertnum); area2=deci3+(2*deci4)+em+i+((j+1)*vertnum);area4=deci3+(2*deci4)+em+i+1+(j*vertnum); area3=deci3+(2*deci4)+em+i+1+((j+1)*vertnum);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;
+}
+	/*Wall brace to column*/area1=deci3+(2*deci4)+em+i+((horinum2-1)*vertnum);area2=deci3+(2*deci4)+i+vertnum-1;area4=deci3+(2*deci4)+em+i+1+((horinum2-1)*vertnum);area3=deci3+(2*deci4)+i+1+vertnum-1;ar2x=columnx[area2-(deci3+(2*deci4))];ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar3x=columnx[area3-(deci3+(2*deci4))];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar3y=columny[area3-(deci3+(2*deci4))];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar3z=columnz[area3-(deci3+(2*deci4))];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;   
+
+	}
+	area1/*Column*/=deci3+(2*deci4)+vertnum-2;area2/*WallBrace*/=deci3+(2*deci4)+em+vertnum-2;area3/*Wall Brace*/=deci3+(2*deci4)+em+vertnum-1;area4/*Truss*/=decia+((0)*deci4);ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=trussx[area4];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=trussy[area4];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=trussz[area4];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;   
+
+	for(j=0;j<horinum2-1;j++){area1=deci3+(2*deci4)+em+vertnum-2+(j*vertnum); area2=deci3+(2*deci4)+em+vertnum-2+((j+1)*vertnum);area3=deci3+(2*deci4)+em+vertnum-1+((j+1)*vertnum);area4=deci3+(2*deci4)+em+vertnum-1+(j*vertnum);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;   
+}
+	/*Wall brace to top column*/area1/*Wall Brace*/=deci3+(2*deci4)+em+vertnum-2+((horinum2-1)*vertnum);area2/*Column*/=deci3+(2*deci4)+vertnum-2+vertnum-1+((vertnum-1)*2*(0));area3/*Truss*/=decib+((0)*deci4);area4/*Wall Brace*/=deci3+(2*deci4)+em+vertnum-1+((horinum2-1)*vertnum);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=columnx[area2-(deci3+(2*deci4))];ar3x=trussx[area3];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar3y=trussy[area3];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar3z=trussz[area3];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;  
+
+	
+	/*Horizontal Braces - Back*/
+	for(i=0;i<vertnum-2;i++)
+	{
+	/*Column to wall brace*/area1=deci3+(2*deci4)+i+((vertnum-1)*2*(trass-1)); area2=deci3+(2*deci4)+em+(horinum2*vertnum)+i;area4=deci3+(2*deci4)+i+1+((vertnum-1)*2*(trass-1)); area3=deci3+(2*deci4)+(horinum2*vertnum)+em+i+1;ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar4x=columnx[area4-(deci3+(2*deci4))];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar4y=columny[area4-(deci3+(2*deci4))];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar4z=columnz[area4-(deci3+(2*deci4))];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	/*Wall brace to wall brace*/for(j=0;j<horinum2-1;j++){area1=deci3+(2*deci4)+em+i+(j*vertnum)+(horinum2*vertnum); area2=deci3+(2*deci4)+em+i+((j+1)*vertnum)+(horinum2*vertnum);area4=deci3+(2*deci4)+em+i+1+(j*vertnum)+(horinum2*vertnum); area3=deci3+(2*deci4)+em+i+1+((j+1)*vertnum)+(horinum2*vertnum);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;
+   }
+	/*Wall brace to column*/area1=deci3+(2*deci4)+em+i+((horinum2-1)*vertnum)+(horinum2*vertnum);area2=deci3+(2*deci4)+i+vertnum-1+((vertnum-1)*2*(trass-1));area4=deci3+(2*deci4)+em+i+1+((horinum2-1)*vertnum)+(horinum2*vertnum);area3=deci3+(2*deci4)+i+1+vertnum-1+((vertnum-1)*2*(trass-1));ar2x=columnx[area2-(deci3+(2*deci4))];ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar3x=columnx[area3-(deci3+(2*deci4))];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar3y=columny[area3-(deci3+(2*deci4))];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar3z=columnz[area3-(deci3+(2*deci4))];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	}
+	
+	area1/*Column*/=deci3+(2*deci4)+vertnum-2+((vertnum-1)*2*(trass-1));area2/*WallBrace*/=deci3+(2*deci4)+em+(horinum2*vertnum)+vertnum-2;area3/*Wall Brace*/=deci3+(2*deci4)+(horinum2*vertnum)+em+vertnum-2+1;area4/*Truss*/=decia+((trass-1)*deci4);ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=trussx[area4];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=trussy[area4];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=trussz[area4];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;   
+
+	for(j=0;j<horinum2-1;j++){area1=deci3+(2*deci4)+em+vertnum-2+(j*vertnum)+(horinum2*vertnum); area2=deci3+(2*deci4)+em+vertnum-2+((j+1)*vertnum)+(horinum2*vertnum);area3=deci3+(2*deci4)+em+vertnum-1+((j+1)*vertnum)+(horinum2*vertnum);area4=deci3+(2*deci4)+em+vertnum-1+(j*vertnum)+(horinum2*vertnum);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;   
+}
+	/*Wall brace to top column*/area1/*Wall Brace*/=deci3+(2*deci4)+em+vertnum-2+((horinum2-1)*vertnum)+(horinum2*vertnum);area2/*Column*/=deci3+(2*deci4)+vertnum-2+vertnum-1+((vertnum-1)*2*(trass-1));area3/*Truss*/=decib+((trass-1)*deci4);area4/*Wall Brace*/=deci3+(2*deci4)+em+vertnum-1+((horinum2-1)*vertnum)+(horinum2*vertnum);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=columnx[area2-(deci3+(2*deci4))];ar3x=trussx[area3];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar3y=trussy[area3];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar3z=trussz[area3];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;
+  
+
+	for(o=0;o<(trass-1);o++)
+	{
+	/*Start row*/for(i=0;i<vertnum-2;i++)
+	{
+	/*Column to Wall Brace*/area1=deci3+(2*deci4)+i+((vertnum-1)*o*2);area2=horref+(o*horinum1*vertnum*2)+i;area4=deci3+(2*deci4)+i+((vertnum-1)*o*2)+1;area3= horref+(o*horinum1*vertnum*2)+i+1;ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=columnx[area4-(deci3+(2*deci4))];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=columny[area4-(deci3+(2*deci4))];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=columnz[area4-(deci3+(2*deci4))];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	/*Wall Brace to Wall Brace*/
+	for(j=0;j<horinum1-1;j++)
+	{/*Wall Brace to Wall Brace*/area1=horref+(o*horinum1*vertnum*2)+(j*vertnum)+i;area2=horref+(o*horinum1*vertnum*2)+((j+1)*vertnum)+i;area4=horref+(o*horinum1*vertnum*2)+(j*vertnum)+i+1;area3=horref+(o*horinum1*vertnum*2)+((j+1)*vertnum)+i+1;ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)]; polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	}
+	/*Wall Brace to Column*/area1=horref+(o*horinum1*vertnum*2)+((horinum1-1)*vertnum)+i;area2=deci3+(2*deci4)+i+((vertnum-1)*(o+1)*2);area4=horref+(o*horinum1*vertnum*2)+((horinum1-1)*vertnum)+i+1;area3=deci3+(2*deci4)+1+i+((vertnum-1)*(o+1)*2);ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=columnx[area2-(deci3+(2*deci4))];ar3x=columnx[area3-(deci3+(2*deci4))];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar3y=columny[area3-(deci3+(2*deci4))];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar3z=columnz[area3-(deci3+(2*deci4))];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+	}/*End row*/
+   
+	/*Top column to wall brace*/
+	area1=deci3+(2*deci4)+vertnum-2+((vertnum-1)*o*2);area2=horref+(horinum1*vertnum*2*o)+vertnum-2;area3=horref+(horinum1*vertnum*2*o)+vertnum-1;area4=decia+(o*deci4);ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=trussx[area4];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=trussy[area4];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=trussz[area4];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+	for(j=0;j<horinum1-1;j++)
+	{
+	area1=horref+(o*horinum1*vertnum*2)+(j*vertnum)+vertnum-2;area2=horref+(o*horinum1*vertnum*2)+((j+1)*vertnum)+vertnum-2;area4=horref+(o*horinum1*vertnum*2)+(j*vertnum)+vertnum-2+1;area3=horref+(o*horinum1*vertnum*2)+((j+1)*vertnum)+vertnum-2+1;ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	}
+	area1/*Wall Brace*/=horref+(o*horinum1*vertnum*2)+((horinum1-1)*vertnum)+vertnum-2;area2/*Column*/=deci3+(2*deci4)+vertnum-2+((vertnum-1)*(o+1)*2); area3/*Truss*/=decia+((o+1)*deci4);area4/*Wall Brace*/=horref+(o*horinum1*vertnum*2)+((horinum1-1)*vertnum)+vertnum-1;ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=columnx[area2-((deci3)+(2*deci4))];ar3x=trussx[area3];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=columny[area2-((deci3)+(2*deci4))];ar3y=trussy[area3];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=columnz[area2-((deci3)+(2*deci4))];ar3z=trussz[area3];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	/*Start Row*/for(i=0;i<vertnum-2;i++)
+	{	
+	area1=deci3+(2*deci4)+i+((vertnum-1)*((2*o)+1));area2= horref+(((2*o)+1)*horinum1*vertnum)+i;area4=deci3+(2*deci4)+i+1+((vertnum-1)*((2*o)+1));area3= horref+(((2*o)+1)*horinum1*vertnum)+i+1;ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=columnx[area4-(deci3+(2*deci4))];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=columny[area4-(deci3+(2*deci4))];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=columnz[area4-(deci3+(2*deci4))];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+    /*Wall Brace to Wall Brace*/
+	for(j=0;j<horinum1-1;j++)
+	{
+	area1=horref+(((2*o)+1)*horinum1*vertnum)+(j*vertnum)+i;area2=horref+(((2*o)+1)*horinum1*vertnum)+((j+1)*vertnum)+i;area4=horref+(((2*o)+1)*horinum1*vertnum)+(j*vertnum)+i+1;area3=horref+(((2*o)+1)*horinum1*vertnum)+((j+1)*vertnum)+i+1;ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	}
+	/*Wall Brace to Column*/
+	area1=horref+(horinum1*vertnum*((2*o)+1))+((horinum1-1)*vertnum)+i;area2=deci3+(2*deci4)+i+((vertnum-1)*((2*o)+3));area4=horref+(horinum1*vertnum*((2*o)+1))+((horinum1-1)*vertnum)+i+1;area3=deci3+(2*deci4)+i+1+((vertnum-1)*((2*o)+3));ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=columnx[area2-(deci3+(2*deci4))];ar3x=columnx[area3-(deci3+(2*deci4))];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar3y=columny[area3-(deci3+(2*deci4))];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar3z=columnz[area3-(deci3+(2*deci4))];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;  
+
+	}/*End Row*/
+	/*Top column to wall brace*/
+	area1=deci3+(2*deci4)+vertnum-2+((vertnum-1)*((2*o)+1));area2=horref+(horinum1*vertnum*((2*o)+1))+vertnum-2;area3=horref+(horinum1*vertnum*((2*o)+1))+vertnum-1;area4=decib+(o*deci4);ar1x=columnx[area1-(deci3+(2*deci4))];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=trussx[area4];ar1y=columny[area1-(deci3+(2*deci4))];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=trussy[area4];ar1z=columnz[area1-(deci3+(2*deci4))];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=trussz[area4];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+	for(j=0;j<horinum1-1;j++)
+	{
+	area1=horref+(horinum1*vertnum*((2*o)+1))+(j*vertnum)+vertnum-2;area2=horref+(horinum1*vertnum*((2*o)+1))+((j+1)*vertnum)+vertnum-2;area4=horref+(horinum1*vertnum*((2*o)+1))+(j*vertnum)+vertnum-2+1;area3=horref+(horinum1*vertnum*((2*o)+1))+((j+1)*vertnum)+vertnum-2+1;ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=wallBracex[area2-(deci3+(2*deci4)+em)];ar3x=wallBracex[area3-(deci3+(2*deci4)+em)];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=wallBracey[area2-(deci3+(2*deci4)+em)];ar3y=wallBracey[area3-(deci3+(2*deci4)+em)];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=wallBracez[area2-(deci3+(2*deci4)+em)];ar3z=wallBracez[area3-(deci3+(2*deci4)+em)];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+	fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));parea[areacount]=polyarea;areacount++;
+
+	}
+	area1/*Wall Brace*/=horref+(horinum1*vertnum*((2*o)+1))+((horinum1-1)*vertnum)+vertnum-2;area2/*Column*/=deci3+(2*deci4)+vertnum-2+((vertnum-1)*((2*o)+3)); area3/*Truss*/=decib+((o+1)*deci4);area4/*Wall Brace*/=horref+(horinum1*vertnum*((2*o)+1))+((horinum1-1)*vertnum)+vertnum-1;ar1x=wallBracex[area1-(deci3+(2*deci4)+em)];ar2x=columnx[area2-(deci3+(2*deci4))];ar3x=trussx[area3];ar4x=wallBracex[area4-(deci3+(2*deci4)+em)];ar1y=wallBracey[area1-(deci3+(2*deci4)+em)];ar2y=columny[area2-(deci3+(2*deci4))];ar3y=trussy[area3];ar4y=wallBracey[area4-(deci3+(2*deci4)+em)];ar1z=wallBracez[area1-(deci3+(2*deci4)+em)];ar2z=columnz[area2-(deci3+(2*deci4))];ar3z=trussz[area3];ar4z=wallBracez[area4-(deci3+(2*deci4)+em)];polyarea=shoelace(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);perimeter=perim(ar1x,ar1y,ar1z,ar2x,ar2y,ar2z,ar3x,ar3y,ar3z,ar4x,ar4y,ar4z);
+    fprintf(sap2000,"Area=%d   NumJoints=4   Joint1=%d   Joint2=%d   Joint3=%d   Joint4=%d   Perimeter=%lf   AreaArea=%lf   CentroidX=%lf   CentroidY=%lf   CentroidZ=%lf\n",areacount+1,area1+1,area2+1,area3+1,area4+1,perimeter,polyarea,0.25*(ar1x+ar2x+ar3x+ar4x),0.25*(ar1y+ar2y+ar3y+ar4y),0.25*(ar1z+ar2z+ar3z+ar4z));areacount++;   
+
+	}
+
+	return 0;
+
+}
